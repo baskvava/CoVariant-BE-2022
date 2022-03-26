@@ -1,0 +1,22 @@
+{
+  "name": "covariant-be-2022",
+  "version": "1.0.0",
+  "description": "- Display kinds of variants Covid-19 data - Online version: https://amazing-covariants.surge.sh/ - Anoter online version: https://baskvava.github.io/CoVariants/",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/baskvava/CoVariant-BE-2022.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/baskvava/CoVariant-BE-2022/issues"
+  },
+  "homepage": "https://github.com/baskvava/CoVariant-BE-2022#readme",
+  "dependencies": {
+    "express": "^4.17.3"
+  }
+}
