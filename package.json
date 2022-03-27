@@ -17,6 +17,9 @@
   },
   "homepage": "https://github.com/baskvava/CoVariant-BE-2022#readme",
   "dependencies": {
-    "express": "^4.17.3"
+    "axios": "^0.26.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.3",
+    "pandas-js": "^0.2.4"
   }
 }
