@@ -49,39 +49,10 @@ function processStateData(ALL_JSON) {
     }
   }
 
-  //let ALL_USA_JSON = [];
-
-  //let ALL_col = ["Alpha","Beta","Gamma","Omicron","Kappa","Eta","Iota","Lambda","others","Delta","non_variants"];
-  // let Need_DF = ALL_DF.get(ALL_col)
-
-  // let week_set = new Set(ALL_DF.get('week').values)
-  // const week_list = [...week_set]
-
-  // for (var week_date of week_list) {
-  //     const WEEK_JSON = {}
-  //     const WEEK_JSON_T = Need_DF.filter(ALL_DF.get("week").eq(week_date));
-
-  //     for (var col of ALL_col){
-  //         let now_list = WEEK_JSON_T.get(col).values
-  //         let total = 0
-  //         for (var t of now_list){
-  //             if(!isNaN(t)){
-  //                 total = total + t
-  //             }
-  //         }
-  //         // console.log(now_list)
-  //         WEEK_JSON[col] = total;
-  //     }
-  //     WEEK_JSON["week"] = week_date
-  //     ALL_USA_JSON.push( WEEK_JSON )
-  // }
-  // console.log( ALL_USA_JSON )
-
-  // return [ ALL_DF, ALL_USA_JSON]
   return [build_obj]
 }
 
-function processData(input_data) { 
+function processUsaData(input_data) {
   const all_data = input_data[0]
   const results = []
   const all_cols = ["Alpha","Beta","Gamma","Omicron","Kappa","Eta","Iota","Lambda","others","Delta","non_variants"];
@@ -113,7 +84,6 @@ function processData(input_data) {
   return results
 }
 
-
 app.use(cors())
 app.get('/getStates', (req, res) => {
   // res.send('Hello World!')
@@ -131,13 +101,10 @@ app.get('/getStates', (req, res) => {
 })
 
 app.get('/getAllUsa', (req, res) => {
-  // res.send('Hello World!')
   axios.get(`${URL}`)
   .then(function (response) {
-    //console.log(processData(response.data.countries));
     const states_data = processStateData(response.data.countries)
-    const result = processData(states_data)
-    //res.send(processData(response.data.countries))
+    const result = processUsaData(states_data)
     res.send(result)
   })
   .catch(function (error) {
