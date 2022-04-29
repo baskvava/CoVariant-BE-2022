@@ -7,8 +7,8 @@
 ### Author
 [baskvava](https://github.com/baskvava), [QuenLo](https://github.com/QuenLo), Yuxi Liang, Zewen Xu, Jiacheng Sun
 
-**- COMP/ELEC 425/554 004**<br>
-1.10 - How might we display variants?
+**- 2022 Spring COMP 590 Computer Systems Architecture, Ray Simar**<br>
+sp22-variant-display
 
 ### Credit
 Emma B. Hodcroft. 2021. "CoVariants: SARS-CoV-2 Mutations and Variants of Interest." https://covariants.org/

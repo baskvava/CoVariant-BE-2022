@@ -5,6 +5,18 @@ const app = express()
 const port = process.env.PORT || 3001
 const URL = "https://raw.githubusercontent.com/hodcroftlab/covariants/master/cluster_tables/USAClusters_data.json";
 
+counties_regions_set = {
+    "New England": ["Connecticut", "Maine", "Massachusetts", "New Hampshire", "Rhode Island", "Vermont"],
+    "Mid-Atlantic": ["New Jersey", "New York", "Pennsylvania"],
+    "East North Central": ["Illinois", "Indiana", "Michigan", "Ohio", "Wisconsin"],
+    "West North Central": ["Iowa", "Kansas", "Minnesota", "Missouri", "Nebraska", "North Dakota", "South Dakota"],
+    "South Atlantic": ["Delaware", "Florida", "Georgia", "Maryland", "North Carolina", "South Carolina", "Virginia", "Washington DC", "West Virginia"],
+    "East South Central": ["Alabama", "Kentucky", "Mississippi", "Tennessee"],
+    "West South Central": ["Texas", "Arkansas", "Louisiana", "Oklahoma"],
+    "West Mountain": ["Arizona", "Colorado", "Idaho", "Montana", "Nevada", "New Mexico", "Utah", "Wyoming"],
+    "West Pacific": ["Alaska", "California", "Hawaii", "Oregon", "Washington"],
+}
+
 function processStateData(ALL_JSON) {
   const rename_columns = {
       "20I (Alpha, V1)": "Alpha", "20H (Beta, V2)": "Beta", "20J (Gamma, V3)": "Gamma",
@@ -44,12 +56,33 @@ function processStateData(ALL_JSON) {
         obj["Delta"] = delta
         obj["others"] = others
         obj["non_variants"] = total_sequences - total
-        obj["county"] = county
+        obj["county"] = county //NEED CHANGE -> State ?
         build_obj.push(obj)
     }
   }
 
   return [build_obj]
+}
+
+function processStateData_Detail(ALL_JSON) {
+    const build_obj = []
+    for (const county in ALL_JSON) {
+        const length = ALL_JSON[county].week.length
+        const covkeys = Object.keys(ALL_JSON[county])
+        for (var i in [...Array(length).keys()]) {
+            const obj = {};
+            for (var K of covkeys) {
+                if (K === "week") {
+                    obj["week"] = ALL_JSON[county][K][i]
+                } else {
+                    obj[K] = ALL_JSON[county][K][i]
+                }
+            }
+            obj["county"] = county //NEED CHANGE -> State ?
+            build_obj.push(obj)
+        }
+    }
+    return [build_obj]
 }
 
 function processUsaData(input_data) {
@@ -84,6 +117,16 @@ function processUsaData(input_data) {
   return results
 }
 
+function processOneState(input_data, State){
+    const all_data = input_data[0]
+
+    const results = all_data.filter(data => {
+        return data.county === State
+    })
+
+    return results
+}
+
 app.use(cors())
 app.get('/getStates', (req, res) => {
   // res.send('Hello World!')
@@ -100,6 +143,18 @@ app.get('/getStates', (req, res) => {
   });
 })
 
+app.get('/getStatesDetail', (req, res) => {
+
+    axios.get(`${URL}`)
+        .then(function (response) {
+            const result = processStateData_Detail(response.data.countries)
+            res.send(result)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+})
+
 app.get('/getAllUsa', (req, res) => {
   axios.get(`${URL}`)
   .then(function (response) {
@@ -110,6 +165,50 @@ app.get('/getAllUsa', (req, res) => {
   .catch(function (error) {
     console.log(error);
   });
+})
+
+app.get('/getState/:state?', (req, res) => {
+    let State = "";
+    let para = req.params;
+    if( para ){
+        State = para.state;
+    }
+
+    axios.get(`${URL}`)
+        .then(function (response) {
+            const states_data = processStateData(response.data.countries)
+            const result = processOneState(states_data, State)
+            if( !State ){
+                res.send({"State Options":counties_regions_set})
+            }else{
+                res.send({result})
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+})
+
+app.get('/getStateDetail/:state?', (req, res) => {
+    let State = "";
+    let para = req.params;
+    if( para ){
+        State = para.state;
+    }
+
+    axios.get(`${URL}`)
+        .then(function (response) {
+            const states_data = processStateData_Detail(response.data.countries)
+            const result = processOneState(states_data, State)
+            if( !State ){
+                res.send({"State Options":counties_regions_set})
+            }else{
+                res.send({result})
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
 })
 
 app.listen(port, () => {
